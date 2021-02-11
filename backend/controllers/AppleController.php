@@ -87,7 +87,7 @@ class AppleController extends Controller
 
     public function actionAjaxCreateApple() {
         $data = Yii::$app->request->post();
-        $apple = new Apple($data['color']);
+        $apple = new Apple(trim($data['color']));
         $apple->save();
         $formattedApple['id']               = $apple->id;
         $formattedApple['color']            = $apple->getColor();

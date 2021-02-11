@@ -42,26 +42,12 @@ class Apple extends ActiveRecord
         'Черное'
     ];
 
-    // Константа аккуратности вывода размера яблока (количество цифр после
-    // запятой)
-    //const SIZE_ACCURACY = 2;
     // Константа времени гниения
     const TIME_SPOIL = 18000;
-/*
-    // Цвет яблока
-    private $color;
-    // Дата появления
-    private $dateOfAppearance;
-    // Дата падения с дерева
-    private $dateOfFall;
-    // Статус яблока
-    private $status;
-    // Размер яблока (1 - целое, 0 - съедено)
-    private $size;
-*/
+
     public function __construct($color = null) {
         parent::__construct();
-        if (!is_null($color)) {
+        if (!is_null($color) && !empty($color)) {
             $this->color = $color;
         } else {
             $this->color = self::COLORS[rand(0,5)];

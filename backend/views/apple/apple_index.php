@@ -24,8 +24,9 @@ $this->title = 'Яблоки';
         <th>Статус</th>
         <th>Размер</th>
         <th>Управление</th>
-        <?php
-        foreach ($apples as $apple) {
+<?php
+        if (!is_null($apples)) {
+            foreach ($apples as $apple) {
 ?>
         <tr class="id-<?= $apple['id'] ?>">
             <td><?= $apple['color'] ?></td>
@@ -34,15 +35,15 @@ $this->title = 'Яблоки';
             <td class="apple-status"><?= $apple['status'] ?></td>
             <td class="apple-size"><?= $apple['size'] ?></td>
             <td class="apple-function">
-<?php       switch ($apple['status_int']) {
-                case 1: ?>
+<?php           switch ($apple['status_int']) {
+                    case 1: ?>
                 <div class="col-md-4">
                     <button class="btn btn-default apple_fall"
                             value="<?= $apple['id'] ?>">Уронить</button>
                 </div>
-                    <?php
-                    break;
-                case 2: ?>
+                        <?php
+                        break;
+                    case 2: ?>
                 <div class="col-md-4">
                     <input type="text" name="percent" placeholder="Проценты"
                            class="form-control">
@@ -51,12 +52,13 @@ $this->title = 'Яблоки';
                     <button class="btn btn-default apple_eat"
                             value="<?= $apple['id'] ?>">Съесть</button>
                 </div>
-                    <?php
-                    break;
-            } ?>
+                        <?php
+                        break;
+                } ?>
             </td>
         </tr>
-        <?php } ?>
+        <?php }
+        } ?>
     </table>
 </div>
 
@@ -69,7 +71,6 @@ $('#create_apple').on('click', function() {
         data: { color : $("#color_apple").val() },
         method: 'POST',
         success: function(data) {
-            console.log(data);
             data = JSON.parse(data);
             $('#apples').append('<tr class="id-' + data['id'] + '">' +
                 '<td>' + data['color'] + '</td>' +
