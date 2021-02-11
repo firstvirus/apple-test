@@ -12,12 +12,12 @@
     <li>Обязательно настроить включить Pretty Url</li>
     <li>Настроить выполнение скрипта из backend\web.</li>
     <li>
-        Проверить наличие файла .htaccess в папке backend\web. При его отсутствии создать этот файл с содержимым:
+        Проверить наличие файла .htaccess в папке backend\web. При его отсутствии создать этот файл с содержимым:</br>
         <code>
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . index.php [L]
+RewriteEngine on</br>
+RewriteCond %{REQUEST_FILENAME} !-d</br>
+RewriteCond %{REQUEST_FILENAME} !-f</br>
+RewriteRule . index.php [L]</br>
         </code>
     </li>
     <li>При заходе на страницу ввести связку логин\пароль: admin\admin</li>
