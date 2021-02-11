@@ -3,6 +3,7 @@ namespace backend\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\base\InvalidValueException;
 
 /**
  * Description of Apple
@@ -26,9 +27,9 @@ class Apple extends ActiveRecord
 
     // Массив строк для статуса яблока
     const STATUS_STRINGS = [
-        ON_TREE     => 'Яблоко на дереве',
-        ON_GROUND   => 'Яблоко на земле',
-        SPOILED     => 'Яблоко сгнило'
+        self::ON_TREE     => 'Яблоко на дереве',
+        self::ON_GROUND   => 'Яблоко на земле',
+        self::SPOILED     => 'Яблоко сгнило'
     ];
 
     // Массив первоначальных цветов яблока
@@ -61,11 +62,12 @@ class Apple extends ActiveRecord
         if (!is_null($color)) {
             $this->color = $color;
         } else {
-            $this->color = COLORS[rand(0,5)];
+            $this->color = self::COLORS[rand(0,5)];
         }
         $this->dateOfAppearance = time();
-        $this->status = ON_TREE;
+        $this->status = self::ON_TREE;
         $this->size = 1;
+        $this->user_id = Yii::$app->user->id;
     }
 
     public static function tableName() {
@@ -81,15 +83,19 @@ class Apple extends ActiveRecord
     }
 
     public function getDateOfFall($timeFormat = 'Y-m-d H:i:s') {
-        return date($timeFormat, $this->dateOfFall);
+        if (!is_null($this->dateOfFall)) {
+            return date($timeFormat, $this->dateOfFall);
+        } else {
+            return 'Еще не упало.';
+        }
     }
 
     public function fallToGround() {
-        if ($this->status != ON_TREE) {
+        if ($this->status != self::ON_TREE) {
             throw new InvalidValueException(
                     'Данное яблоко уже упало или сгнило.');
         }
-        $this->status = ON_GROUND;
+        $this->status = self::ON_GROUND;
         $this->dateOfFall = time();
     }
 
@@ -97,12 +103,16 @@ class Apple extends ActiveRecord
         return self::STATUS_STRINGS[$this->status];
     }
 
+    public function getStatusInt() {
+        return $this->status;
+    }
+
     public function getSize() {
-        return number_format($this->size, SIZE_ACCURACY);
+        return number_format($this->size, self::SIZE_ACCURACY);
     }
 
     public function eat($percent) {
-        if ($this->status == ON_GROUND) {
+        if ($this->status == self::ON_GROUND) {
             if ($percent < 0 || $percent > 100) {
                 throw new InvalidValueException(
                         'Неверное количество процентов съедения яблока');

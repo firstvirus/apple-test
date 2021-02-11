@@ -20,7 +20,13 @@ class AppleController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'ajaxCreateApples'],
+                        'actions' => [
+                            'index',
+                            'create-apples',
+                            'ajax-create-apple',
+                            'ajax-fall-apple',
+                            'ajax-eat-apple'
+                        ],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -49,35 +55,73 @@ class AppleController extends Controller
     public function actionIndex()
     {
         $apples = Apple::find()->all();
-        return $this->render('apple_index', [ 'apples' => compact($apples) ]);
-    }
-
-    public function actionAjaxCreateApples() {
-        for ($i = 0; $i == rand(1,9); $i++) {
-            $apples[$i] = new Apple();
-            $apples[$i]->save();
+        foreach ($apples as $key => $apple) {
+            if ($apple->getSize() == 0) {
+                $apple->delete();
+                continue;
+            }
+            $formattedApples[$key]['id']                = $apple->id;
+            $formattedApples[$key]['color']             = $apple->getColor();
+            $formattedApples[$key]['dateOfAppearance']  = $apple->
+                                                          getDateOfAppearance();
+            $formattedApples[$key]['dateOfFall']        = $apple->
+                                                          getDateOfFall();
+            $formattedApples[$key]['status']            = $apple->getStatus();
+            $formattedApples[$key]['status_int']        = $apple->
+                                                          getStatusInt();
+            $formattedApples[$key]['size']              = $apple->getSize();
         }
-        return json_encode(compact($apples));
+        return $this->render('apple_index', [ 'apples' => $formattedApples ]);
     }
 
-    public function actionAjaxCreateApple($color) {
-        $apple = new Apple($color);
+    public function actionCreateApples() {
+        $max = rand(1,9);
+        
+        for ($i = 0; $i <= $max; $i++) {
+            $apple = new Apple();
+            $apple->save();
+        }
+        $this->redirect(['/apple']);
+    }
+
+    public function actionAjaxCreateApple() {
+        $data = Yii::$app->request->post();
+        $apple = new Apple($data['color']);
         $apple->save();
-        return json_encode(compact($apple));
+        $formattedApple['id']               = $apple->id;
+        $formattedApple['color']            = $apple->getColor();
+        $formattedApple['dateOfFall']       = $apple->getDateOfFall();
+        $formattedApple['dateOfAppearance'] = $apple->getDateOfAppearance();
+        $formattedApple['status']           = $apple->getStatus();
+        $formattedApple['status_int']       = $apple->getStatusInt();
+        $formattedApple['size']             = $apple->getSize();
+
+        return json_encode($formattedApple);
     }
 
-    public function actionAjaxFallApple($id) {
-        $apple = Apple::findOne($id);
+    public function actionAjaxFallApple() {
+        $data = Yii::$app->request->post();
+        $apple = Apple::findOne($data['id']);
         $apple->fallToGround();
         $apple->save();
-        return json_encode(compact($apple));
+        $formattedApple['id']           = $apple->id;
+        $formattedApple['dateOfFall']   = $apple->getDateOfFall();
+        $formattedApple['status']       = $apple->getStatus();
+        $formattedApple['status_int']   = $apple->getStatusInt();
+
+        return json_encode($formattedApple);
     }
 
-    public function actionAjaxEatApple($id, $percent) {
-        $apple = Apple::findOne($id);
-        $apple->eat($percent);
+    public function actionAjaxEatApple() {
+        $data = Yii::$app->request->post();
+        $apple = Apple::findOne($data['id']);
+        $apple->eat($data['percent']);
         $apple->save();
-        return json_encode(compact($apple));
+        $formattedApple['id']       = $apple->id;
+        $formattedApple['status']   = $apple->getStatus();
+        $formattedApple['size']     = $apple->getSize();
+
+        return json_encode($formattedApple);
     }
 
 }
