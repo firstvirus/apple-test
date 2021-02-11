@@ -13,12 +13,12 @@
     <li>Настроить выполнение скрипта из backend\web.</li>
     <li>
         Проверить наличие файла .htaccess в папке backend\web. При его отсутствии создать этот файл с содержимым:
-        <textarea>
+        <code>
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
-        </textarea>
+        </code>
     </li>
     <li>При заходе на страницу ввести связку логин\пароль: admin\admin</li>
 </ol>
