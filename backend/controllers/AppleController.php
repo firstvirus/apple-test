@@ -56,10 +56,11 @@ class AppleController extends Controller
     {
         $apples = Apple::find()->all();
         foreach ($apples as $key => $apple) {
-            if ($apple->getSize() == 0) {
-                $apple->delete();
+            if ($apple->clean()) {
                 continue;
             }
+            $apple->checkSpoiled();
+
             $formattedApples[$key]['id']                = $apple->id;
             $formattedApples[$key]['color']             = $apple->getColor();
             $formattedApples[$key]['dateOfAppearance']  = $apple->

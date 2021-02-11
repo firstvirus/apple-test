@@ -44,7 +44,9 @@ class Apple extends ActiveRecord
 
     // Константа аккуратности вывода размера яблока (количество цифр после
     // запятой)
-    const SIZE_ACCURACY = 2;
+    //const SIZE_ACCURACY = 2;
+    // Константа времени гниения
+    const TIME_SPOIL = 18000;
 /*
     // Цвет яблока
     private $color;
@@ -108,7 +110,8 @@ class Apple extends ActiveRecord
     }
 
     public function getSize() {
-        return number_format($this->size, self::SIZE_ACCURACY);
+//        return number_format($this->size, self::SIZE_ACCURACY);
+        return strval(round($this->size * 100)) . '%';
     }
 
     public function eat($percent) {
@@ -126,5 +129,25 @@ class Apple extends ActiveRecord
                     'Яблоко еще не упало или оно уже сгнило.');
         }
     }
-    
+
+    public function clean() {
+        if ($this->getSize() == 0) {
+            $this->delete();
+            return true;
+        }
+        return false;
+    }
+
+    public function checkSpoiled() {
+        if ($this->status == self::ON_GROUND) {
+            if (($this->dateOfFall + self::TIME_SPOIL) <= time()) {
+                $this->status = self::SPOILED;
+                $this->save();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
 }
