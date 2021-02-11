@@ -2,14 +2,22 @@
 namespace backend\models;
 
 use Yii;
-use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * Description of Apple
  *
  * @author Virus
+ * @property integer $id
+ * @property integer $user_id           Хозяин яблока
+ * @property string  $color             Цвет яблока
+ * @property integer $dateOfAppearance  Дата появления
+ * @property integer $dateOfFall        Дата падения с дерева
+ * @property integer $status            Статус яблока
+ * @property double  $size              Размер яблока (1 - целое, 0 - съедено)
  */
-class Apple extends Model
+
+class Apple extends ActiveRecord
 {
     // Блок констант для статуса яблока
     const ON_TREE = 1;      // Яблоко на дереве
@@ -36,7 +44,7 @@ class Apple extends Model
     // Константа аккуратности вывода размера яблока (количество цифр после
     // запятой)
     const SIZE_ACCURACY = 2;
-
+/*
     // Цвет яблока
     private $color;
     // Дата появления
@@ -47,7 +55,7 @@ class Apple extends Model
     private $status;
     // Размер яблока (1 - целое, 0 - съедено)
     private $size;
-
+*/
     public function __construct($color = null) {
         parent::__construct();
         if (!is_null($color)) {
@@ -58,6 +66,10 @@ class Apple extends Model
         $this->dateOfAppearance = time();
         $this->status = ON_TREE;
         $this->size = 1;
+    }
+
+    public static function tableName() {
+        return '{{%apples}}';
     }
 
     public function getColor() {
